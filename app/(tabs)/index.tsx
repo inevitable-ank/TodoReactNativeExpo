@@ -21,7 +21,6 @@ const App: FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const { todos, dispatch } = useTodos();
-  const tintColor = useThemeColor({}, "tint");
 
   const filteredTodos = useMemo(() => {
     let filtered = todos;
@@ -118,7 +117,7 @@ const App: FC = () => {
         />
 
         <TouchableOpacity
-          style={[styles.fab, { backgroundColor: tintColor }]}
+          style={styles.fab}
           onPress={() => {
             setShowAddModal(true);
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -166,9 +165,10 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
+    backgroundColor: "#0a7ea4",
+    shadowColor: "#0a7ea4",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 8,
     elevation: 8,
   },
