@@ -527,30 +527,39 @@ const App: FC = () => {
 
         {/* Filter Tabs */}
         <View style={styles.filterContainer}>
-          {(["all", "active", "completed"] as Filter[]).map((f) => (
-            <TouchableOpacity
-              key={f}
-              onPress={() => {
-                setFilter(f);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-              style={[
-                styles.filterTab,
-                filter === f && {
-                  backgroundColor: tintColor,
-                },
-              ]}
-            >
-              <ThemedText
+          {(["all", "active", "completed"] as Filter[]).map((f) => {
+            const isSelected = filter === f;
+            const selectedBgColor = colorScheme === "dark" ? "#0a7ea4" : "#0a7ea4";
+            return (
+              <TouchableOpacity
+                key={f}
+                onPress={() => {
+                  setFilter(f);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
                 style={[
-                  styles.filterText,
-                  filter === f && { color: "#fff" },
+                  styles.filterTab,
+                  isSelected && {
+                    backgroundColor: selectedBgColor,
+                    shadowColor: selectedBgColor,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: 3,
+                  },
                 ]}
               >
-                {f.charAt(0).toUpperCase() + f.slice(1)}
-              </ThemedText>
-            </TouchableOpacity>
-          ))}
+                <ThemedText
+                  style={[
+                    styles.filterText,
+                    isSelected && styles.filterTextSelected,
+                  ]}
+                >
+                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                </ThemedText>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Todo List */}
@@ -773,6 +782,10 @@ const styles = StyleSheet.create({
   filterText: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  filterTextSelected: {
+    color: "#fff",
+    fontWeight: "700",
   },
   listContent: {
     paddingHorizontal: 20,
