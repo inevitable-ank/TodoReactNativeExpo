@@ -121,7 +121,7 @@ export default function ExploreScreen() {
           style={styles.scrollView}
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingTop: insets.top },
+            { paddingTop: insets.top + 20 },
             isTablet && [
               styles.scrollContentTablet,
               { paddingHorizontal: Math.max(40, (width - 768) / 2 + 40) },
@@ -275,7 +275,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 40,
   },
   scrollContentTablet: {

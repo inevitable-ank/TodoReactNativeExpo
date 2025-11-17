@@ -89,7 +89,8 @@ export const StatsHeader: FC<StatsHeaderProps> = ({ todos }) => {
 
 const styles = StyleSheet.create({
   header: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 0,
     paddingBottom: 16,
   },
   headerLandscape: {

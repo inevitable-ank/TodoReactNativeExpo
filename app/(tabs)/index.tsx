@@ -119,7 +119,7 @@ const App: FC = () => {
               ]}
               contentContainerStyle={[
                 styles.headerSectionContent,
-                { paddingTop: insets.top }
+                { paddingTop: insets.top + 20 }
               ]}
               showsVerticalScrollIndicator={true}
             >
@@ -128,7 +128,7 @@ const App: FC = () => {
               <FilterTabs filter={filter} onFilterChange={setFilter} />
             </ScrollView>
           ) : (
-            <View style={[styles.headerSection, { paddingTop: insets.top }]}>
+            <View style={[styles.headerSection, { paddingTop: insets.top + 20 }]}>
               <StatsHeader todos={todos} />
               <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
               <FilterTabs filter={filter} onFilterChange={setFilter} />
