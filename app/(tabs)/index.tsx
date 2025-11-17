@@ -1,5 +1,6 @@
 import React, { FC, useState, useMemo } from "react";
 import { SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Alert, ListRenderItemInfo, View, useWindowDimensions, ScrollView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { ThemedView } from "@/components/themed-view";
@@ -23,6 +24,7 @@ const App: FC = () => {
   const { todos, dispatch } = useTodos();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
+  const insets = useSafeAreaInsets();
   const borderColor = useThemeColor(
     { light: "rgba(0,0,0,0.1)", dark: "rgba(255,255,255,0.1)" },
     "icon"
@@ -115,7 +117,10 @@ const App: FC = () => {
                 styles.headerSectionLandscape,
                 { borderRightColor: borderColor }
               ]}
-              contentContainerStyle={styles.headerSectionContent}
+              contentContainerStyle={[
+                styles.headerSectionContent,
+                { paddingTop: insets.top }
+              ]}
               showsVerticalScrollIndicator={true}
             >
               <StatsHeader todos={todos} />
@@ -123,7 +128,7 @@ const App: FC = () => {
               <FilterTabs filter={filter} onFilterChange={setFilter} />
             </ScrollView>
           ) : (
-            <View style={styles.headerSection}>
+            <View style={[styles.headerSection, { paddingTop: insets.top }]}>
               <StatsHeader todos={todos} />
               <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
               <FilterTabs filter={filter} onFilterChange={setFilter} />

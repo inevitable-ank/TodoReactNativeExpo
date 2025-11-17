@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -12,6 +13,7 @@ export default function ExploreScreen() {
   const { todos } = useTodos();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const insets = useSafeAreaInsets();
   const cardBackground = useThemeColor(
     { light: '#f5f5f5', dark: '#2a2a2a' },
     'background'
@@ -119,6 +121,7 @@ export default function ExploreScreen() {
           style={styles.scrollView}
           contentContainerStyle={[
             styles.scrollContent,
+            { paddingTop: insets.top },
             isTablet && [
               styles.scrollContentTablet,
               { paddingHorizontal: Math.max(40, (width - 768) / 2 + 40) },
