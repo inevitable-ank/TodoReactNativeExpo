@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import * as Haptics from "expo-haptics";
 import { ThemedText } from "@/components/themed-text";
 import { useThemeColor } from "@/hooks/use-theme-color";
@@ -14,9 +14,11 @@ type FilterTabsProps = {
 export const FilterTabs: FC<FilterTabsProps> = ({ filter, onFilterChange }) => {
   const colorScheme = useColorScheme();
   const selectedBgColor = "#0a7ea4";
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   return (
-    <View style={styles.filterContainer}>
+    <View style={[styles.filterContainer, isLandscape && styles.filterContainerLandscape]}>
       {(["all", "active", "completed"] as Filter[]).map((f) => {
         const isSelected = filter === f;
         return (
@@ -28,6 +30,7 @@ export const FilterTabs: FC<FilterTabsProps> = ({ filter, onFilterChange }) => {
             }}
             style={[
               styles.filterTab,
+              isLandscape && styles.filterTabLandscape,
               isSelected && {
                 backgroundColor: selectedBgColor,
                 shadowColor: selectedBgColor,
@@ -41,6 +44,7 @@ export const FilterTabs: FC<FilterTabsProps> = ({ filter, onFilterChange }) => {
             <ThemedText
               style={[
                 styles.filterText,
+                isLandscape && styles.filterTextLandscape,
                 isSelected && styles.filterTextSelected,
               ]}
             >
@@ -60,6 +64,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     gap: 8,
   },
+  filterContainerLandscape: {
+    flexDirection: "column",
+    marginHorizontal: 16,
+    marginBottom: 12,
+    gap: 6,
+  },
   filterTab: {
     flex: 1,
     paddingVertical: 8,
@@ -68,9 +78,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.05)",
   },
+  filterTabLandscape: {
+    flex: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    width: "100%",
+  },
   filterText: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  filterTextLandscape: {
+    fontSize: 12,
   },
   filterTextSelected: {
     color: "#fff",

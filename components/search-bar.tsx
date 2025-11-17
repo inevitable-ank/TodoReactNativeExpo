@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useColorScheme } from "@/hooks/use-color-scheme";
@@ -13,9 +13,11 @@ type SearchBarProps = {
 export const SearchBar: FC<SearchBarProps> = ({ value, onChangeText }) => {
   const colorScheme = useColorScheme();
   const textColor = useThemeColor({}, "text");
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   return (
-    <View style={styles.searchContainer}>
+    <View style={[styles.searchContainer, isLandscape && styles.searchContainerLandscape]}>
       <Ionicons
         name="search"
         size={20}
@@ -25,6 +27,7 @@ export const SearchBar: FC<SearchBarProps> = ({ value, onChangeText }) => {
       <TextInput
         style={[
           styles.searchInput,
+          isLandscape && styles.searchInputLandscape,
           {
             color: textColor,
             backgroundColor: colorScheme === "dark" ? "#1E1E1E" : "#F5F5F5",
@@ -57,6 +60,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "rgba(0,0,0,0.05)",
   },
+  searchContainerLandscape: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    paddingHorizontal: 10,
+  },
   searchIcon: {
     marginRight: 8,
   },
@@ -64,6 +72,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 16,
+  },
+  searchInputLandscape: {
+    paddingVertical: 6,
+    fontSize: 13,
   },
   clearSearch: {
     padding: 4,

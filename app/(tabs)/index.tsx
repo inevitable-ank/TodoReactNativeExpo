@@ -1,5 +1,5 @@
 import React, { FC, useState, useMemo } from "react";
-import { SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Alert, ListRenderItemInfo } from "react-native";
+import { SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Alert, ListRenderItemInfo, View, useWindowDimensions, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { ThemedView } from "@/components/themed-view";
@@ -21,6 +21,12 @@ const App: FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const { todos, dispatch } = useTodos();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+  const borderColor = useThemeColor(
+    { light: "rgba(0,0,0,0.1)", dark: "rgba(255,255,255,0.1)" },
+    "icon"
+  );
 
   const filteredTodos = useMemo(() => {
     let filtered = todos;
@@ -100,24 +106,52 @@ const App: FC = () => {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <StatsHeader todos={todos} />
+        <View style={[styles.mainLayout, isLandscape && styles.mainLayoutLandscape]}>
+          {/* Left Sidebar (Landscape) or Top Section (Portrait) */}
+          {isLandscape ? (
+            <ScrollView
+              style={[
+                styles.headerSection,
+                styles.headerSectionLandscape,
+                { borderRightColor: borderColor }
+              ]}
+              contentContainerStyle={styles.headerSectionContent}
+              showsVerticalScrollIndicator={true}
+            >
+              <StatsHeader todos={todos} />
+              <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+              <FilterTabs filter={filter} onFilterChange={setFilter} />
+            </ScrollView>
+          ) : (
+            <View style={styles.headerSection}>
+              <StatsHeader todos={todos} />
+              <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+              <FilterTabs filter={filter} onFilterChange={setFilter} />
+            </View>
+          )}
 
-        <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
-
-        <FilterTabs filter={filter} onFilterChange={setFilter} />
-
-        <FlatList
-          data={filteredTodos}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            <EmptyState filter={filter} searchQuery={searchQuery} />
-          }
-        />
+          {/* Todo List Area */}
+          <View style={[styles.listContainer, isLandscape && styles.listContainerLandscape]}>
+            <FlatList
+              data={filteredTodos}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              contentContainerStyle={[
+                styles.listContent,
+                isLandscape && styles.listContentLandscape,
+              ]}
+              style={styles.list}
+              showsVerticalScrollIndicator={true}
+              nestedScrollEnabled={true}
+              ListEmptyComponent={
+                <EmptyState filter={filter} searchQuery={searchQuery} />
+              }
+            />
+          </View>
+        </View>
 
         <TouchableOpacity
-          style={styles.fab}
+          style={[styles.fab, isLandscape && styles.fabLandscape]}
           onPress={() => {
             setShowAddModal(true);
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -152,8 +186,45 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+  mainLayout: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  mainLayoutLandscape: {
+    flexDirection: "row",
+  },
+  headerSection: {
+    flexShrink: 0,
+  },
+  headerSectionLandscape: {
+    width: 320,
+    minWidth: 280,
+    maxWidth: 360,
+    borderRightWidth: 1,
+    flex: 0,
+  },
+  headerSectionContent: {
+    paddingRight: 16,
+    paddingBottom: 20,
+  },
+  listContainer: {
+    flex: 1,
+    minHeight: 0,
+  },
+  listContainerLandscape: {
+    flex: 1,
+  },
+  list: {
+    flex: 1,
+    minHeight: 0,
+  },
   listContent: {
     paddingHorizontal: 20,
+    paddingBottom: 100,
+  },
+  listContentLandscape: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
     paddingBottom: 100,
   },
   fab: {
@@ -171,5 +242,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 8,
     elevation: 8,
+  },
+  fabLandscape: {
+    right: 24,
+    bottom: 24,
   },
 });

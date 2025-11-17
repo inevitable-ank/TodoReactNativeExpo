@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import Animated, {
@@ -29,6 +29,8 @@ export const TodoItem: FC<TodoItemProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
   const backgroundColor = useThemeColor(
     { light: "#fff", dark: "#1E1E1E" },
     "background"
@@ -56,6 +58,7 @@ export const TodoItem: FC<TodoItemProps> = ({
       <TouchableOpacity
         style={[
           styles.todoItem,
+          isLandscape && styles.todoItemLandscape,
           {
             backgroundColor,
             borderColor,
@@ -75,31 +78,32 @@ export const TodoItem: FC<TodoItemProps> = ({
           }}
           style={[
             styles.checkbox,
+            isLandscape && styles.checkboxLandscape,
             {
               backgroundColor: item.done ? priorityColor : "transparent",
               borderColor: priorityColor,
             },
           ]}
         >
-          {item.done && <Ionicons name="checkmark" size={18} color="#fff" />}
+          {item.done && <Ionicons name="checkmark" size={isLandscape ? 16 : 18} color="#fff" />}
         </TouchableOpacity>
 
         <View style={styles.todoContent}>
-          <ThemedText style={[styles.todoText, item.done && styles.todoTextDone]}>
+          <ThemedText style={[styles.todoText, isLandscape && styles.todoTextLandscape, item.done && styles.todoTextDone]}>
             {item.text}
           </ThemedText>
-          <View style={styles.todoMeta}>
+          <View style={[styles.todoMeta, isLandscape && styles.todoMetaLandscape]}>
             <View style={styles.priorityBadge}>
               <Ionicons
                 name={getPriorityIcon(item.priority) as any}
-                size={12}
+                size={isLandscape ? 10 : 12}
                 color={priorityColor}
               />
-              <ThemedText style={[styles.priorityText, { color: priorityColor }]}>
+              <ThemedText style={[styles.priorityText, isLandscape && styles.priorityTextLandscape, { color: priorityColor }]}>
                 {item.priority.toUpperCase()}
               </ThemedText>
             </View>
-            <ThemedText style={styles.dateText}>
+            <ThemedText style={[styles.dateText, isLandscape && styles.dateTextLandscape]}>
               {new Date(item.createdAt).toLocaleDateString()}
             </ThemedText>
           </View>
@@ -113,7 +117,7 @@ export const TodoItem: FC<TodoItemProps> = ({
             }}
             style={styles.actionButton}
           >
-            <Ionicons name="create-outline" size={20} color={textColor} />
+            <Ionicons name="create-outline" size={isLandscape ? 18 : 20} color={textColor} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -122,7 +126,7 @@ export const TodoItem: FC<TodoItemProps> = ({
             }}
             style={styles.actionButton}
           >
-            <Ionicons name="trash-outline" size={20} color="#EF5350" />
+            <Ionicons name="trash-outline" size={isLandscape ? 18 : 20} color="#EF5350" />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -143,6 +147,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  todoItemLandscape: {
+    padding: 12,
+    marginBottom: 8,
+  },
   checkbox: {
     width: 28,
     height: 28,
@@ -152,6 +160,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
   },
+  checkboxLandscape: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
   todoContent: {
     flex: 1,
   },
@@ -159,6 +172,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     marginBottom: 4,
+  },
+  todoTextLandscape: {
+    fontSize: 15,
+    marginBottom: 3,
   },
   todoTextDone: {
     textDecorationLine: "line-through",
@@ -168,6 +185,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+  },
+  todoMetaLandscape: {
+    gap: 8,
   },
   priorityBadge: {
     flexDirection: "row",
@@ -181,9 +201,15 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "700",
   },
+  priorityTextLandscape: {
+    fontSize: 9,
+  },
   dateText: {
     fontSize: 11,
     opacity: 0.6,
+  },
+  dateTextLandscape: {
+    fontSize: 10,
   },
   todoActions: {
     flexDirection: "row",
