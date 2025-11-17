@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
@@ -10,6 +10,8 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function ExploreScreen() {
   const { todos } = useTodos();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const cardBackground = useThemeColor(
     { light: '#f5f5f5', dark: '#2a2a2a' },
     'background'
@@ -115,7 +117,13 @@ export default function ExploreScreen() {
       <SafeAreaView style={styles.safeArea}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            isTablet && [
+              styles.scrollContentTablet,
+              { paddingHorizontal: Math.max(40, (width - 768) / 2 + 40) },
+            ],
+          ]}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
@@ -132,25 +140,27 @@ export default function ExploreScreen() {
             <ThemedText type="subtitle" style={styles.cardTitle}>
               Overview
             </ThemedText>
-            <View style={styles.statsGrid}>
-              <View style={styles.statBox}>
-                <ThemedText style={styles.statValue}>{stats.total}</ThemedText>
+            <View style={[styles.statsGrid, isTablet && styles.statsGridTablet]}>
+              <View style={[styles.statBox, isTablet && styles.statBoxTablet]}>
+                <ThemedText style={[styles.statValue, isTablet && styles.statValueTablet]}>
+                  {stats.total}
+                </ThemedText>
                 <ThemedText style={styles.statLabel}>Total Tasks</ThemedText>
               </View>
-              <View style={styles.statBox}>
-                <ThemedText style={[styles.statValue, { color: '#4CAF50' }]}>
+              <View style={[styles.statBox, isTablet && styles.statBoxTablet]}>
+                <ThemedText style={[styles.statValue, isTablet && styles.statValueTablet, { color: '#4CAF50' }]}>
                   {stats.completed}
                 </ThemedText>
                 <ThemedText style={styles.statLabel}>Completed</ThemedText>
               </View>
-              <View style={styles.statBox}>
-                <ThemedText style={[styles.statValue, { color: '#2196F3' }]}>
+              <View style={[styles.statBox, isTablet && styles.statBoxTablet]}>
+                <ThemedText style={[styles.statValue, isTablet && styles.statValueTablet, { color: '#2196F3' }]}>
                   {stats.active}
                 </ThemedText>
                 <ThemedText style={styles.statLabel}>Active</ThemedText>
               </View>
-              <View style={styles.statBox}>
-                <ThemedText style={[styles.statValue, { color: '#9C27B0' }]}>
+              <View style={[styles.statBox, isTablet && styles.statBoxTablet]}>
+                <ThemedText style={[styles.statValue, isTablet && styles.statValueTablet, { color: '#9C27B0' }]}>
                   {stats.completionRate}%
                 </ThemedText>
                 <ThemedText style={styles.statLabel}>Done</ThemedText>
@@ -265,6 +275,12 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
+  scrollContentTablet: {
+    paddingHorizontal: 40,
+    maxWidth: 1200,
+    alignSelf: 'center',
+    width: '100%',
+  },
   header: {
     marginBottom: 24,
   },
@@ -293,16 +309,27 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
+  statsGridTablet: {
+    justifyContent: 'flex-start',
+    gap: 16,
+  },
   statBox: {
     width: '48%',
     alignItems: 'center',
     paddingVertical: 16,
     marginBottom: 12,
   },
+  statBoxTablet: {
+    width: '23%',
+    marginBottom: 0,
+  },
   statValue: {
     fontSize: 32,
     fontWeight: '700',
     marginBottom: 4,
+  },
+  statValueTablet: {
+    fontSize: 40,
   },
   statLabel: {
     fontSize: 14,
