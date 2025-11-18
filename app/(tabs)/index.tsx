@@ -144,6 +144,7 @@ const App: FC = () => {
               contentContainerStyle={[
                 styles.listContent,
                 isLandscape && styles.listContentLandscape,
+                isLandscape && { paddingTop: insets.top + 8 },
               ]}
               style={styles.list}
               showsVerticalScrollIndicator={true}
@@ -229,7 +230,6 @@ const styles = StyleSheet.create({
   },
   listContentLandscape: {
     paddingHorizontal: 16,
-    paddingTop: 8,
     paddingBottom: 100,
   },
   fab: {
